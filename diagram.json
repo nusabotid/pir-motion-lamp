@@ -2,7 +2,32 @@
   "version": 1,
   "author": "Adam Damara",
   "editor": "wokwi",
-  "parts": [ { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -19.2, "left": 62.44, "attrs": {} } ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ],
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-pir-motion-sensor", "id": "pir1", "top": 23.2, "left": -122.58, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relay1", "top": 48.2, "left": 153.6, "attrs": {} },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 15.6,
+      "left": 320.6,
+      "attrs": { "color": "red", "flip": "1" }
+    },
+    { "type": "wokwi-vcc", "id": "vcc1", "top": 29.56, "left": 297.6, "attrs": {} },
+    { "type": "wokwi-gnd", "id": "gnd1", "top": 76.8, "left": 335.4, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "pir1:VCC", "esp:5V", "red", [ "v0" ] ],
+    [ "pir1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "pir1:OUT", "esp:12", "green", [ "v0" ] ],
+    [ "relay1:VCC", "esp:5V", "red", [ "h-28.8", "v163.2", "h-144", "v-28.8" ] ],
+    [ "relay1:IN", "esp:18", "green", [ "h-38.4", "v19" ] ],
+    [ "relay1:GND", "esp:GND.2", "black", [ "h-38.4", "v-29.2" ] ],
+    [ "vcc1:VCC", "relay1:COM", "red", [ "v0" ] ],
+    [ "led1:C", "gnd1:GND", "green", [ "v0" ] ],
+    [ "led1:A", "relay1:NO", "red", [ "v0" ] ]
+  ],
   "dependencies": {}
 }

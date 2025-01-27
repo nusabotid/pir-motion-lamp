@@ -1,4 +1,8 @@
 #include <WiFi.h>
+#include <MQTT.h>
+
+WiFiClient net;
+MQTTClient client;
 
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
@@ -15,6 +19,12 @@ void connect(){
         delay(500);
     }
     rgb(0,1,0);
+
+    while (!client.connect("clientidrandom")){
+        delay(500);
+    }
+    rgb(0,0,1);
+    
 }
 
 void setup(){
@@ -25,11 +35,16 @@ void setup(){
     pinMode(bluePin, OUTPUT);
 
     WiFi.begin(ssid, password);
+    client.begin("broker.emqx.io", net);
 
     connect();
 }
 
 void loop(){
+    if(!client.connected()){
+        connect();
+    }
+    
     bool statusPir = digitalRead(pirPin);
 
     digitalWrite(relayPin, statusPir);

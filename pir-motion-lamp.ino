@@ -1,8 +1,10 @@
 #include <WiFi.h>
 #include <MQTT.h>
+#include <NusabotSimpleTimer.h>
 
 WiFiClient net;
 MQTTClient client;
+NusabotSimpleTimer timer;
 
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
@@ -12,6 +14,8 @@ const int relayPin = 18;
 const int redPin = 27;
 const int greenPin = 26;
 const int bluePin = 25;
+
+bool statusPir;
 
 void connect(){
     rgb(1,0,0);
@@ -27,6 +31,10 @@ void connect(){
     
 }
 
+void publish(){
+    client.publish("nusabot/pir", String(statusPir), true, 1);
+}
+
 void setup(){
     pinMode(pirPin, INPUT);
     pinMode(relayPin, OUTPUT);
@@ -36,16 +44,18 @@ void setup(){
 
     WiFi.begin(ssid, password);
     client.begin("broker.emqx.io", net);
+    timer.setInterval(1000, publish);
 
     connect();
 }
 
 void loop(){
+    timer.run();
     if(!client.connected()){
         connect();
     }
-    
-    bool statusPir = digitalRead(pirPin);
+
+    statusPir = digitalRead(pirPin);
 
     digitalWrite(relayPin, statusPir);
 }

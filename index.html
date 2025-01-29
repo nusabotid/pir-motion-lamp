@@ -22,7 +22,7 @@
                     <div class="card text-center mb-4">
                         <div class="card-body">
                             <h5 class="card-title">Ruangan 1</h5>
-                            <h1 class="card-text text-primary">Ada Gerakan</h1>
+                            <h1 class="card-text" id="status-gerakan-r1">?</h1>
                         </div>
                     </div>
                 </div>
@@ -50,6 +50,18 @@
             console.log("menghubungkan ke server");
             client.on('connect', () => {
                 console.log('Berhasil terhubung ke server');
+                client.subscribe('nusabot/pir', 1);
+            });
+
+            client.on('message', (topic, message) => {
+                var data = message.toString();
+                if(data == "1"){
+                    document.getElementById("status-gerakan-r1").innerHTML = "Ada Gerakan";
+                    document.getElementById("status-gerakan-r1").style.color = "blue";
+                }else{
+                    document.getElementById("status-gerakan-r1").innerHTML = "Tidak Ada Gerakan";
+                    document.getElementById("status-gerakan-r1").style.color = "red";
+                }
             });
         </script>
     </body>
